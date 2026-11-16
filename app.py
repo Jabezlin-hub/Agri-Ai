@@ -350,7 +350,8 @@ with tab_rec:
     st.subheader(f"Your field vs. typical {crop_name(best.crop).lower()} conditions")
     crop_rows = df[df[TARGET] == best.crop][FEATURES]
     compare = pd.DataFrame({
-        "Your value": pd.Series(inputs),
+        # Fixed FEATURES order: the form collects inputs in a different (soil, climate) order
+        "Your value": pd.Series(inputs)[FEATURES],
         "Crop average": crop_rows.mean().round(2),
         "Crop min": crop_rows.min().round(2),
         "Crop max": crop_rows.max().round(2),
