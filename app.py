@@ -3,6 +3,7 @@
 Run:  streamlit run app.py
 """
 import json
+import warnings
 from pathlib import Path
 
 import altair as alt
@@ -48,9 +49,27 @@ def crop_label(c: str) -> str:
 
 # Each loader takes the metrics file's timestamp, so re-running train.py
 # refreshes the cache without restarting the app.
+# Harmless on its own, but printed once per tree per prediction on cloud hosts.
+warnings.filterwarnings("ignore", message=".*sklearn.utils.parallel.delayed.*")
+
+
+def _single_core(est):
+    """Make every fitted part of the model predict on one core. The model was trained with
+    n_jobs=-1 (all cores); on a cloud container Python sees the host's many cores but the
+    app gets a fraction of one, so parallel prediction spawns dozens of competing threads.
+    A single core is also faster for the small batches the app predicts."""
+    if hasattr(est, "n_jobs"):
+        est.n_jobs = 1
+    for part in (getattr(est, "estimators_", None) or []):
+        _single_core(part)
+    for _, step in (getattr(est, "steps", None) or []):
+        _single_core(step)
+    return est
+
+
 @st.cache_resource
 def get_model(version: float):
-    return joblib.load(MODEL_PATH)
+    return _single_core(joblib.load(MODEL_PATH))
 
 
 @st.cache_data
@@ -73,6 +92,23 @@ def explain(version: float, field: tuple):
     """Exact Shapley values for this field, against the 64 crops' median profiles."""
     background = df.groupby(TARGET)[FEATURES].median()
     return shapley_values(model, dict(zip(FEATURES, field)), background)
+
+
+# Streamlit reruns the whole script on every click and renders every tab, so the
+# model-heavy steps are cached per field: repeat visits and other tabs cost nothing.
+@st.cache_data(show_spinner=False)
+def predict(version: float, field: tuple):
+    return model.predict_proba(pd.DataFrame([field], columns=FEATURES))[0]
+
+
+@st.cache_data(show_spinner=False)
+def cached_soil_fix(version: float, field: tuple, crop: str):
+    return soil_fix(model, dict(zip(FEATURES, field)), crop, df)
+
+
+@st.cache_data(show_spinner=False)
+def cached_stress_test(version: float, field: tuple, crops: tuple):
+    return stress_test(model, dict(zip(FEATURES, field)), list(crops))
 
 
 if not MODEL_PATH.exists() or not METRICS_PATH.exists():
@@ -224,8 +260,7 @@ with tab_rec:
         st.form_submit_button("🌱 Recommend crop", type="primary", width="stretch")
 
     st.subheader("2. Recommendation")
-    X = pd.DataFrame([inputs])[FEATURES]
-    proba = model.predict_proba(X)[0]
+    proba = predict(version, tuple(inputs[f] for f in FEATURES))
     ranking = (pd.DataFrame({"crop": model.classes_, "confidence": proba})
                .sort_values("confidence", ascending=False).reset_index(drop=True))
     best = ranking.iloc[0]
@@ -319,14 +354,16 @@ with tab_fix:
     all_crops = sorted(model.classes_, key=crop_name)
     # Default: among the next 9 crops, the one soil changes can lift to #1 with the fewest
     # climate mismatches (ties go to the higher-ranked crop).
+    field_key = tuple(inputs[f] for f in FEATURES)
+
     def _demo_score(c):
-        r = soil_fix(model, inputs, c, df)
+        r = cached_soil_fix(version, field_key, c)
         return (r["status"] != "top", len(r.get("climate_issues", [])))
     alternatives = list(ranking.crop.iloc[1:10])
     suggested = min(alternatives, key=lambda c: (_demo_score(c), alternatives.index(c)))
     target = st.selectbox("Crop you want to grow", all_crops, index=all_crops.index(suggested),
                           format_func=crop_label)
-    fix = soil_fix(model, inputs, target, df)
+    fix = cached_soil_fix(version, field_key, target)
     name = crop_name(target)
 
     if fix["status"] == "already":
@@ -387,7 +424,8 @@ with tab_climate:
                "across scenarios, not just the best one today.")
     st.caption(FIELD_LINE)
     shortlist = list(ranking.crop.head(5))
-    probs, ranks = stress_test(model, inputs, shortlist)
+    probs, ranks = cached_stress_test(version, tuple(inputs[f] for f in FEATURES),
+                                      tuple(shortlist))
     n_first = (ranks == 1).sum(axis=1)          # scenarios where the crop is the top pick
     worst = probs.min(axis=1)
     resilient = max(shortlist, key=lambda c: (n_first[c], worst[c]))
