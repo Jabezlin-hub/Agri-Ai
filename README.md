@@ -65,6 +65,13 @@ AgriAI/
 
 ## Setup and run
 
+**Windows, one click:** double-click `run_app.bat`. The first time, it creates a Python
+environment in `%LOCALAPPDATA%\AgriAI\venv` (outside OneDrive, so thousands of package
+files aren't synced) and installs `requirements.txt`, which takes a few minutes. After that
+it starts in seconds and opens http://localhost:8501. Close the window to stop the app.
+
+**Manual setup (any OS):**
+
 ```bash
 # 1. Create and activate a virtual environment
 python -m venv .venv
