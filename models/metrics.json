@@ -1,0 +1,2284 @@
+{
+  "data_source": "Crop_recommendation_data.csv (extended dataset)",
+  "n_rows": 7950,
+  "n_crops": 64,
+  "best_model": "Stacking ensemble (RF + HGB)",
+  "selection": "highest 5-fold cross-validation accuracy on the training set, among models that need at most 300 MB of memory",
+  "memory_budget_mb": 300,
+  "final": {
+    "model": "Stacking ensemble (RF + HGB)",
+    "params": {
+      "members": [
+        "random_forest",
+        "extra_trees",
+        "hist_gradient_boosting"
+      ]
+    },
+    "cv_mean": 0.6404088050314465,
+    "cv_std": 0.010062893081761023,
+    "seconds": 22.0,
+    "test_accuracy": 0.6540880503144654,
+    "test_f1_macro": 0.667744394746691,
+    "test_top3": 0.859748427672956,
+    "test_top5": 0.9314465408805032,
+    "memory_mb": 216.4
+  },
+  "results": [
+    {
+      "model": "Random Forest",
+      "cv_mean": 0.6223270440251574,
+      "cv_std": 0.010136327963073073,
+      "test_accuracy": 0.6415094339622641,
+      "test_f1_macro": 0.6492681731367772,
+      "test_top3": 0.8660377358490566,
+      "test_top5": 0.9352201257861635,
+      "train_seconds": 5.8
+    },
+    {
+      "model": "Gradient Boosting",
+      "cv_mean": 0.6091194968553459,
+      "cv_std": 0.010999548699618064,
+      "test_accuracy": 0.620754716981132,
+      "test_f1_macro": 0.6333536655609933,
+      "test_top3": 0.8515723270440252,
+      "test_top5": 0.9308176100628931,
+      "train_seconds": 107.44
+    },
+    {
+      "model": "Gaussian Naive Bayes",
+      "cv_mean": 0.5916666666666667,
+      "cv_std": 0.007077218512532644,
+      "test_accuracy": 0.5962264150943396,
+      "test_f1_macro": 0.6164036249609106,
+      "test_top3": 0.839622641509434,
+      "test_top5": 0.9238993710691824,
+      "train_seconds": 0.09
+    },
+    {
+      "model": "Support Vector Machine",
+      "cv_mean": 0.5660377358490567,
+      "cv_std": 0.010080075738883405,
+      "test_accuracy": 0.5823899371069182,
+      "test_f1_macro": 0.5867766792288289,
+      "test_top3": 0.8264150943396227,
+      "test_top5": 0.9169811320754717,
+      "train_seconds": 11.03
+    },
+    {
+      "model": "Logistic Regression",
+      "cv_mean": 0.5358490566037737,
+      "cv_std": 0.0053919585532963285,
+      "test_accuracy": 0.5446540880503145,
+      "test_f1_macro": 0.5562797553872648,
+      "test_top3": 0.7886792452830189,
+      "test_top5": 0.889937106918239,
+      "train_seconds": 3.45
+    },
+    {
+      "model": "Decision Tree",
+      "cv_mean": 0.52625786163522,
+      "cv_std": 0.008417458373788798,
+      "test_accuracy": 0.5471698113207547,
+      "test_f1_macro": 0.559405368987772,
+      "test_top3": 0.5528301886792453,
+      "test_top5": 0.580503144654088,
+      "train_seconds": 0.19
+    },
+    {
+      "model": "K-Nearest Neighbors",
+      "cv_mean": 0.5114779874213837,
+      "cv_std": 0.007583116699237422,
+      "test_accuracy": 0.5182389937106918,
+      "test_f1_macro": 0.527121868184417,
+      "test_top3": 0.7220125786163522,
+      "test_top5": 0.7861635220125787,
+      "train_seconds": 0.2
+    }
+  ],
+  "tuning": [
+    {
+      "model": "Stacking ensemble",
+      "params": {
+        "members": [
+          "random_forest",
+          "extra_trees",
+          "hist_gradient_boosting"
+        ]
+      },
+      "cv_mean": 0.641194968553459,
+      "cv_std": 0.009270064762882804,
+      "seconds": 45.4,
+      "test_accuracy": 0.6597484276729559,
+      "test_f1_macro": 0.6714942044030687,
+      "test_top3": 0.8647798742138365,
+      "test_top5": 0.9320754716981132,
+      "memory_mb": 658.5
+    },
+    {
+      "model": "Soft-voting ensemble",
+      "params": {
+        "members": [
+          "random_forest",
+          "extra_trees",
+          "hist_gradient_boosting"
+        ]
+      },
+      "cv_mean": 0.6408805031446541,
+      "cv_std": 0.01205063286563502,
+      "seconds": 10.6,
+      "test_accuracy": 0.660377358490566,
+      "test_f1_macro": 0.6714648903175282,
+      "test_top3": 0.8805031446540881,
+      "test_top5": 0.9471698113207547,
+      "memory_mb": 658.4
+    },
+    {
+      "model": "Stacking ensemble (RF + HGB)",
+      "params": {
+        "members": [
+          "random_forest",
+          "extra_trees",
+          "hist_gradient_boosting"
+        ]
+      },
+      "cv_mean": 0.6404088050314465,
+      "cv_std": 0.010062893081761023,
+      "seconds": 22.0,
+      "test_accuracy": 0.6540880503144654,
+      "test_f1_macro": 0.667744394746691,
+      "test_top3": 0.859748427672956,
+      "test_top5": 0.9314465408805032,
+      "memory_mb": 216.4
+    },
+    {
+      "model": "Hist Gradient Boosting (tuned)",
+      "params": {
+        "min_samples_leaf": 10,
+        "max_leaf_nodes": 15,
+        "max_iter": 200,
+        "learning_rate": 0.1,
+        "l2_regularization": 1.0
+      },
+      "cv_mean": 0.6303459119496855,
+      "cv_std": 0.011664928925151832,
+      "seconds": 86.8,
+      "test_accuracy": 0.6465408805031446,
+      "test_f1_macro": 0.6578496135308982,
+      "test_top3": 0.8779874213836478,
+      "test_top5": 0.950314465408805,
+      "memory_mb": 4.0
+    },
+    {
+      "model": "Random Forest (tuned)",
+      "params": {
+        "n_estimators": 200,
+        "min_samples_leaf": 2,
+        "max_features": "sqrt",
+        "max_depth": 20,
+        "class_weight": "balanced"
+      },
+      "cv_mean": 0.6276729559748427,
+      "cv_std": 0.009584748839074333,
+      "seconds": 21.7,
+      "test_accuracy": 0.6433962264150943,
+      "test_f1_macro": 0.6565446795379952,
+      "test_top3": 0.8628930817610063,
+      "test_top5": 0.9364779874213837,
+      "memory_mb": 212.3
+    },
+    {
+      "model": "Random Forest (default settings)",
+      "params": {},
+      "cv_mean": 0.6223270440251574,
+      "cv_std": 0.010136327963073073,
+      "seconds": 5.8,
+      "test_accuracy": 0.6415094339622641,
+      "test_f1_macro": 0.6492681731367772,
+      "test_top3": 0.8660377358490566,
+      "test_top5": 0.9352201257861635,
+      "memory_mb": 378.1
+    },
+    {
+      "model": "Extra Trees (tuned)",
+      "params": {
+        "n_estimators": 200,
+        "min_samples_leaf": 2,
+        "max_features": 0.5,
+        "max_depth": null
+      },
+      "cv_mean": 0.613993710691824,
+      "cv_std": 0.004846237423717725,
+      "seconds": 12.5,
+      "test_accuracy": 0.6238993710691824,
+      "test_f1_macro": 0.6303393940225569,
+      "test_top3": 0.8534591194968554,
+      "test_top5": 0.9352201257861635,
+      "memory_mb": 442.1
+    }
+  ],
+  "learning_curve": {
+    "train_size": [
+      508,
+      1424,
+      2340,
+      3256,
+      4172,
+      5088
+    ],
+    "train_mean": [
+      0.991732283464567,
+      0.9946629213483146,
+      0.9930769230769231,
+      0.9927518427518429,
+      0.9894534995206137,
+      0.9873427672955974
+    ],
+    "val_mean": [
+      0.5007861635220126,
+      0.5691823899371069,
+      0.5984276729559748,
+      0.6133647798742137,
+      0.6218553459119497,
+      0.6273584905660378
+    ],
+    "val_std": [
+      0.015089425300641621,
+      0.005469348154379266,
+      0.011155768411991658,
+      0.005294798188831036,
+      0.004769104052862594,
+      0.011797692756166062
+    ]
+  },
+  "family_accuracy": 0.9635220125786164,
+  "families": {
+    "k": 7,
+    "silhouette": {
+      "5": 0.28709108897215463,
+      "6": 0.28762756253166416,
+      "7": 0.30017970253976844,
+      "8": 0.28774938642386405,
+      "9": 0.28973146893505236,
+      "10": 0.23242397348074811,
+      "11": 0.23629722150402832,
+      "12": 0.24908607658954784
+    },
+    "names": {
+      "1": "Mothbeans group",
+      "2": "Jute group",
+      "3": "Cranberry group",
+      "4": "Flax group",
+      "5": "Beetroot group",
+      "6": "Cabbage group",
+      "7": "Grapes group"
+    },
+    "descriptions": {
+      "1": "low nitrogen, dry air",
+      "2": "low rainfall, warm",
+      "3": "acidic soil, high rainfall",
+      "4": "low potassium, cool",
+      "5": "high potassium, high nitrogen",
+      "6": "high nitrogen, high potassium",
+      "7": "high phosphorus, high potassium"
+    },
+    "family_of": {
+      "apple": 5,
+      "artichoke": 5,
+      "asparagus": 5,
+      "banana": 2,
+      "barley": 4,
+      "beetroot": 5,
+      "blackgram": 1,
+      "blueberry": 3,
+      "broccoli": 6,
+      "brussels_sprouts": 6,
+      "buckwheat": 4,
+      "cabbage": 6,
+      "canola": 5,
+      "carrot": 5,
+      "cauliflower": 6,
+      "celery": 6,
+      "cherry": 5,
+      "chickpea": 1,
+      "coconut": 2,
+      "coffee": 2,
+      "cotton": 2,
+      "cranberry": 3,
+      "faba_bean": 4,
+      "flax": 4,
+      "garlic": 5,
+      "grapes": 7,
+      "hazelnut": 5,
+      "horseradish": 5,
+      "jute": 2,
+      "kale": 5,
+      "kidneybeans": 1,
+      "leek": 5,
+      "lentil": 1,
+      "lettuce": 5,
+      "maize": 2,
+      "mango": 1,
+      "mothbeans": 1,
+      "mungbean": 2,
+      "muskmelon": 2,
+      "mustard": 5,
+      "oats": 4,
+      "onion": 5,
+      "orange": 2,
+      "papaya": 2,
+      "parsnip": 5,
+      "pear": 5,
+      "peas": 4,
+      "pigeonpeas": 1,
+      "plum": 5,
+      "pomegranate": 2,
+      "potato": 6,
+      "quinoa": 4,
+      "radish": 5,
+      "raspberry": 5,
+      "rice": 2,
+      "rye": 4,
+      "spinach": 5,
+      "strawberry": 5,
+      "sugar_beet": 5,
+      "swede": 5,
+      "turnip": 5,
+      "walnut": 5,
+      "watermelon": 2,
+      "wheat": 4
+    },
+    "explained_variance": [
+      0.36417162224601235,
+      0.19003691831872455
+    ]
+  },
+  "feature_importance": {
+    "N": 0.13778113188249141,
+    "P": 0.12104349722966683,
+    "K": 0.16365271949548604,
+    "temperature": 0.11267920021572253,
+    "humidity": 0.1542065917039651,
+    "ph": 0.11569233668259274,
+    "rainfall": 0.1949445227900751
+  },
+  "feature_importance_model": "Random Forest (tuned)",
+  "anova": [
+    {
+      "feature": "K",
+      "F_score": 1498.2869412259076,
+      "p_value": 0.0
+    },
+    {
+      "feature": "N",
+      "F_score": 841.4100287353119,
+      "p_value": 0.0
+    },
+    {
+      "feature": "rainfall",
+      "F_score": 505.1122078338082,
+      "p_value": 0.0
+    },
+    {
+      "feature": "P",
+      "F_score": 258.8804190598398,
+      "p_value": 0.0
+    },
+    {
+      "feature": "temperature",
+      "F_score": 212.97577592593447,
+      "p_value": 0.0
+    },
+    {
+      "feature": "humidity",
+      "F_score": 137.12527461331203,
+      "p_value": 0.0
+    },
+    {
+      "feature": "ph",
+      "F_score": 123.83717948184756,
+      "p_value": 0.0
+    }
+  ],
+  "errors": [
+    {
+      "actual": "quinoa",
+      "predicted": "lentil",
+      "count": 8
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "swede",
+      "count": 8
+    },
+    {
+      "actual": "chickpea",
+      "predicted": "lentil",
+      "count": 7
+    },
+    {
+      "actual": "cranberry",
+      "predicted": "blueberry",
+      "count": 6
+    },
+    {
+      "actual": "faba_bean",
+      "predicted": "peas",
+      "count": 6
+    },
+    {
+      "actual": "peas",
+      "predicted": "faba_bean",
+      "count": 5
+    },
+    {
+      "actual": "strawberry",
+      "predicted": "cherry",
+      "count": 5
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "swede",
+      "count": 5
+    },
+    {
+      "actual": "pear",
+      "predicted": "apple",
+      "count": 5
+    },
+    {
+      "actual": "cherry",
+      "predicted": "pear",
+      "count": 5
+    },
+    {
+      "actual": "cherry",
+      "predicted": "plum",
+      "count": 5
+    },
+    {
+      "actual": "cauliflower",
+      "predicted": "broccoli",
+      "count": 5
+    },
+    {
+      "actual": "blueberry",
+      "predicted": "cranberry",
+      "count": 5
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "carrot",
+      "count": 5
+    },
+    {
+      "actual": "oats",
+      "predicted": "flax",
+      "count": 5
+    },
+    {
+      "actual": "broccoli",
+      "predicted": "brussels_sprouts",
+      "count": 4
+    },
+    {
+      "actual": "celery",
+      "predicted": "cauliflower",
+      "count": 4
+    },
+    {
+      "actual": "apple",
+      "predicted": "plum",
+      "count": 4
+    },
+    {
+      "actual": "wheat",
+      "predicted": "flax",
+      "count": 4
+    },
+    {
+      "actual": "swede",
+      "predicted": "parsnip",
+      "count": 4
+    },
+    {
+      "actual": "buckwheat",
+      "predicted": "quinoa",
+      "count": 4
+    },
+    {
+      "actual": "plum",
+      "predicted": "pear",
+      "count": 4
+    },
+    {
+      "actual": "garlic",
+      "predicted": "onion",
+      "count": 4
+    },
+    {
+      "actual": "leek",
+      "predicted": "asparagus",
+      "count": 4
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "brussels_sprouts",
+      "count": 4
+    },
+    {
+      "actual": "pear",
+      "predicted": "strawberry",
+      "count": 4
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "plum",
+      "count": 4
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "asparagus",
+      "count": 4
+    },
+    {
+      "actual": "raspberry",
+      "predicted": "apple",
+      "count": 4
+    },
+    {
+      "actual": "apple",
+      "predicted": "hazelnut",
+      "count": 4
+    },
+    {
+      "actual": "broccoli",
+      "predicted": "cauliflower",
+      "count": 3
+    },
+    {
+      "actual": "carrot",
+      "predicted": "beetroot",
+      "count": 3
+    },
+    {
+      "actual": "cauliflower",
+      "predicted": "brussels_sprouts",
+      "count": 3
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "garlic",
+      "count": 3
+    },
+    {
+      "actual": "mustard",
+      "predicted": "lettuce",
+      "count": 3
+    },
+    {
+      "actual": "broccoli",
+      "predicted": "cabbage",
+      "count": 3
+    },
+    {
+      "actual": "quinoa",
+      "predicted": "buckwheat",
+      "count": 3
+    },
+    {
+      "actual": "lentil",
+      "predicted": "chickpea",
+      "count": 3
+    },
+    {
+      "actual": "cabbage",
+      "predicted": "broccoli",
+      "count": 3
+    },
+    {
+      "actual": "apple",
+      "predicted": "pear",
+      "count": 3
+    },
+    {
+      "actual": "swede",
+      "predicted": "horseradish",
+      "count": 3
+    },
+    {
+      "actual": "radish",
+      "predicted": "cherry",
+      "count": 3
+    },
+    {
+      "actual": "canola",
+      "predicted": "horseradish",
+      "count": 3
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "kale",
+      "count": 3
+    },
+    {
+      "actual": "turnip",
+      "predicted": "carrot",
+      "count": 3
+    },
+    {
+      "actual": "plum",
+      "predicted": "hazelnut",
+      "count": 3
+    },
+    {
+      "actual": "lentil",
+      "predicted": "faba_bean",
+      "count": 3
+    },
+    {
+      "actual": "apple",
+      "predicted": "strawberry",
+      "count": 3
+    },
+    {
+      "actual": "brussels_sprouts",
+      "predicted": "cauliflower",
+      "count": 3
+    },
+    {
+      "actual": "onion",
+      "predicted": "beetroot",
+      "count": 3
+    },
+    {
+      "actual": "rye",
+      "predicted": "barley",
+      "count": 3
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "spinach",
+      "count": 3
+    },
+    {
+      "actual": "pear",
+      "predicted": "raspberry",
+      "count": 3
+    },
+    {
+      "actual": "swede",
+      "predicted": "asparagus",
+      "count": 3
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "walnut",
+      "count": 3
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "onion",
+      "count": 3
+    },
+    {
+      "actual": "faba_bean",
+      "predicted": "buckwheat",
+      "count": 3
+    },
+    {
+      "actual": "pear",
+      "predicted": "plum",
+      "count": 3
+    },
+    {
+      "actual": "flax",
+      "predicted": "oats",
+      "count": 3
+    },
+    {
+      "actual": "wheat",
+      "predicted": "raspberry",
+      "count": 3
+    },
+    {
+      "actual": "turnip",
+      "predicted": "cherry",
+      "count": 3
+    },
+    {
+      "actual": "sugar_beet",
+      "predicted": "artichoke",
+      "count": 3
+    },
+    {
+      "actual": "swede",
+      "predicted": "beetroot",
+      "count": 3
+    },
+    {
+      "actual": "chickpea",
+      "predicted": "faba_bean",
+      "count": 3
+    },
+    {
+      "actual": "turnip",
+      "predicted": "raspberry",
+      "count": 2
+    },
+    {
+      "actual": "leek",
+      "predicted": "spinach",
+      "count": 2
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "raspberry",
+      "count": 2
+    },
+    {
+      "actual": "cherry",
+      "predicted": "radish",
+      "count": 2
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "turnip",
+      "count": 2
+    },
+    {
+      "actual": "plum",
+      "predicted": "lettuce",
+      "count": 2
+    },
+    {
+      "actual": "sugar_beet",
+      "predicted": "carrot",
+      "count": 2
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "lettuce",
+      "count": 2
+    },
+    {
+      "actual": "spinach",
+      "predicted": "horseradish",
+      "count": 2
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "leek",
+      "count": 2
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "plum",
+      "count": 2
+    },
+    {
+      "actual": "turnip",
+      "predicted": "radish",
+      "count": 2
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "plum",
+      "count": 2
+    },
+    {
+      "actual": "carrot",
+      "predicted": "onion",
+      "count": 2
+    },
+    {
+      "actual": "kale",
+      "predicted": "spinach",
+      "count": 2
+    },
+    {
+      "actual": "strawberry",
+      "predicted": "mustard",
+      "count": 2
+    },
+    {
+      "actual": "walnut",
+      "predicted": "hazelnut",
+      "count": 2
+    },
+    {
+      "actual": "radish",
+      "predicted": "lettuce",
+      "count": 2
+    },
+    {
+      "actual": "lentil",
+      "predicted": "peas",
+      "count": 2
+    },
+    {
+      "actual": "mustard",
+      "predicted": "wheat",
+      "count": 2
+    },
+    {
+      "actual": "walnut",
+      "predicted": "asparagus",
+      "count": 2
+    },
+    {
+      "actual": "raspberry",
+      "predicted": "strawberry",
+      "count": 2
+    },
+    {
+      "actual": "quinoa",
+      "predicted": "peas",
+      "count": 2
+    },
+    {
+      "actual": "onion",
+      "predicted": "carrot",
+      "count": 2
+    },
+    {
+      "actual": "flax",
+      "predicted": "barley",
+      "count": 2
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "lettuce",
+      "count": 2
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "mustard",
+      "count": 2
+    },
+    {
+      "actual": "apple",
+      "predicted": "cherry",
+      "count": 2
+    },
+    {
+      "actual": "flax",
+      "predicted": "wheat",
+      "count": 2
+    },
+    {
+      "actual": "faba_bean",
+      "predicted": "chickpea",
+      "count": 2
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "sugar_beet",
+      "count": 2
+    },
+    {
+      "actual": "strawberry",
+      "predicted": "radish",
+      "count": 2
+    },
+    {
+      "actual": "raspberry",
+      "predicted": "oats",
+      "count": 2
+    },
+    {
+      "actual": "faba_bean",
+      "predicted": "rye",
+      "count": 2
+    },
+    {
+      "actual": "oats",
+      "predicted": "wheat",
+      "count": 2
+    },
+    {
+      "actual": "plum",
+      "predicted": "walnut",
+      "count": 2
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "walnut",
+      "count": 2
+    },
+    {
+      "actual": "carrot",
+      "predicted": "swede",
+      "count": 2
+    },
+    {
+      "actual": "brussels_sprouts",
+      "predicted": "broccoli",
+      "count": 2
+    },
+    {
+      "actual": "canola",
+      "predicted": "swede",
+      "count": 2
+    },
+    {
+      "actual": "strawberry",
+      "predicted": "hazelnut",
+      "count": 2
+    },
+    {
+      "actual": "broccoli",
+      "predicted": "canola",
+      "count": 2
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "asparagus",
+      "count": 2
+    },
+    {
+      "actual": "cherry",
+      "predicted": "apple",
+      "count": 2
+    },
+    {
+      "actual": "mustard",
+      "predicted": "turnip",
+      "count": 2
+    },
+    {
+      "actual": "oats",
+      "predicted": "mustard",
+      "count": 2
+    },
+    {
+      "actual": "spinach",
+      "predicted": "asparagus",
+      "count": 2
+    },
+    {
+      "actual": "brussels_sprouts",
+      "predicted": "canola",
+      "count": 2
+    },
+    {
+      "actual": "sugar_beet",
+      "predicted": "horseradish",
+      "count": 2
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "pear",
+      "count": 2
+    },
+    {
+      "actual": "sugar_beet",
+      "predicted": "asparagus",
+      "count": 2
+    },
+    {
+      "actual": "cabbage",
+      "predicted": "cauliflower",
+      "count": 2
+    },
+    {
+      "actual": "cherry",
+      "predicted": "turnip",
+      "count": 2
+    },
+    {
+      "actual": "plum",
+      "predicted": "cherry",
+      "count": 2
+    },
+    {
+      "actual": "spinach",
+      "predicted": "swede",
+      "count": 2
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "cauliflower",
+      "count": 2
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "leek",
+      "count": 2
+    },
+    {
+      "actual": "garlic",
+      "predicted": "radish",
+      "count": 2
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "apple",
+      "count": 2
+    },
+    {
+      "actual": "cabbage",
+      "predicted": "brussels_sprouts",
+      "count": 2
+    },
+    {
+      "actual": "onion",
+      "predicted": "garlic",
+      "count": 2
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "artichoke",
+      "count": 2
+    },
+    {
+      "actual": "carrot",
+      "predicted": "parsnip",
+      "count": 2
+    },
+    {
+      "actual": "mustard",
+      "predicted": "flax",
+      "count": 2
+    },
+    {
+      "actual": "plum",
+      "predicted": "turnip",
+      "count": 2
+    },
+    {
+      "actual": "onion",
+      "predicted": "sugar_beet",
+      "count": 2
+    },
+    {
+      "actual": "apple",
+      "predicted": "raspberry",
+      "count": 2
+    },
+    {
+      "actual": "leek",
+      "predicted": "canola",
+      "count": 2
+    },
+    {
+      "actual": "kale",
+      "predicted": "canola",
+      "count": 2
+    },
+    {
+      "actual": "cherry",
+      "predicted": "strawberry",
+      "count": 2
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "horseradish",
+      "count": 2
+    },
+    {
+      "actual": "lettuce",
+      "predicted": "radish",
+      "count": 2
+    },
+    {
+      "actual": "rye",
+      "predicted": "faba_bean",
+      "count": 2
+    },
+    {
+      "actual": "turnip",
+      "predicted": "parsnip",
+      "count": 2
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "swede",
+      "count": 1
+    },
+    {
+      "actual": "barley",
+      "predicted": "rye",
+      "count": 1
+    },
+    {
+      "actual": "cherry",
+      "predicted": "raspberry",
+      "count": 1
+    },
+    {
+      "actual": "garlic",
+      "predicted": "plum",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "sugar_beet",
+      "count": 1
+    },
+    {
+      "actual": "canola",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "buckwheat",
+      "predicted": "flax",
+      "count": 1
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "oats",
+      "predicted": "faba_bean",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "canola",
+      "count": 1
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "sugar_beet",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "plum",
+      "count": 1
+    },
+    {
+      "actual": "lettuce",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "sugar_beet",
+      "predicted": "pear",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "sugar_beet",
+      "count": 1
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "pear",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "kale",
+      "count": 1
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "cherry",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "artichoke",
+      "count": 1
+    },
+    {
+      "actual": "rice",
+      "predicted": "jute",
+      "count": 1
+    },
+    {
+      "actual": "brussels_sprouts",
+      "predicted": "celery",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "radish",
+      "predicted": "garlic",
+      "count": 1
+    },
+    {
+      "actual": "flax",
+      "predicted": "quinoa",
+      "count": 1
+    },
+    {
+      "actual": "faba_bean",
+      "predicted": "quinoa",
+      "count": 1
+    },
+    {
+      "actual": "swede",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "spinach",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "leek",
+      "count": 1
+    },
+    {
+      "actual": "radish",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "turnip",
+      "predicted": "garlic",
+      "count": 1
+    },
+    {
+      "actual": "rye",
+      "predicted": "peas",
+      "count": 1
+    },
+    {
+      "actual": "radish",
+      "predicted": "onion",
+      "count": 1
+    },
+    {
+      "actual": "lettuce",
+      "predicted": "swede",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "broccoli",
+      "count": 1
+    },
+    {
+      "actual": "raspberry",
+      "predicted": "flax",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "carrot",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "rye",
+      "predicted": "quinoa",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "radish",
+      "count": 1
+    },
+    {
+      "actual": "leek",
+      "predicted": "swede",
+      "count": 1
+    },
+    {
+      "actual": "flax",
+      "predicted": "rye",
+      "count": 1
+    },
+    {
+      "actual": "flax",
+      "predicted": "peas",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "barley",
+      "predicted": "flax",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "turnip",
+      "predicted": "mustard",
+      "count": 1
+    },
+    {
+      "actual": "quinoa",
+      "predicted": "faba_bean",
+      "count": 1
+    },
+    {
+      "actual": "quinoa",
+      "predicted": "barley",
+      "count": 1
+    },
+    {
+      "actual": "swede",
+      "predicted": "cherry",
+      "count": 1
+    },
+    {
+      "actual": "canola",
+      "predicted": "broccoli",
+      "count": 1
+    },
+    {
+      "actual": "mustard",
+      "predicted": "garlic",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "cabbage",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "brussels_sprouts",
+      "count": 1
+    },
+    {
+      "actual": "garlic",
+      "predicted": "mustard",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "leek",
+      "count": 1
+    },
+    {
+      "actual": "onion",
+      "predicted": "artichoke",
+      "count": 1
+    },
+    {
+      "actual": "pear",
+      "predicted": "hazelnut",
+      "count": 1
+    },
+    {
+      "actual": "plum",
+      "predicted": "sugar_beet",
+      "count": 1
+    },
+    {
+      "actual": "oats",
+      "predicted": "barley",
+      "count": 1
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "garlic",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "canola",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "mustard",
+      "predicted": "pear",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "plum",
+      "count": 1
+    },
+    {
+      "actual": "raspberry",
+      "predicted": "turnip",
+      "count": 1
+    },
+    {
+      "actual": "carrot",
+      "predicted": "plum",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "sugar_beet",
+      "count": 1
+    },
+    {
+      "actual": "oats",
+      "predicted": "raspberry",
+      "count": 1
+    },
+    {
+      "actual": "swede",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "turnip",
+      "predicted": "pear",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "broccoli",
+      "count": 1
+    },
+    {
+      "actual": "brussels_sprouts",
+      "predicted": "cabbage",
+      "count": 1
+    },
+    {
+      "actual": "pear",
+      "predicted": "walnut",
+      "count": 1
+    },
+    {
+      "actual": "leek",
+      "predicted": "kale",
+      "count": 1
+    },
+    {
+      "actual": "barley",
+      "predicted": "faba_bean",
+      "count": 1
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "asparagus",
+      "count": 1
+    },
+    {
+      "actual": "garlic",
+      "predicted": "cherry",
+      "count": 1
+    },
+    {
+      "actual": "leek",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "garlic",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "cherry",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "peas",
+      "predicted": "chickpea",
+      "count": 1
+    },
+    {
+      "actual": "hazelnut",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "canola",
+      "predicted": "artichoke",
+      "count": 1
+    },
+    {
+      "actual": "flax",
+      "predicted": "raspberry",
+      "count": 1
+    },
+    {
+      "actual": "leek",
+      "predicted": "walnut",
+      "count": 1
+    },
+    {
+      "actual": "cauliflower",
+      "predicted": "cabbage",
+      "count": 1
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "turnip",
+      "count": 1
+    },
+    {
+      "actual": "cauliflower",
+      "predicted": "potato",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "turnip",
+      "count": 1
+    },
+    {
+      "actual": "buckwheat",
+      "predicted": "rye",
+      "count": 1
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "broccoli",
+      "count": 1
+    },
+    {
+      "actual": "buckwheat",
+      "predicted": "faba_bean",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "canola",
+      "count": 1
+    },
+    {
+      "actual": "broccoli",
+      "predicted": "artichoke",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "onion",
+      "count": 1
+    },
+    {
+      "actual": "barley",
+      "predicted": "wheat",
+      "count": 1
+    },
+    {
+      "actual": "brussels_sprouts",
+      "predicted": "artichoke",
+      "count": 1
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "canola",
+      "predicted": "garlic",
+      "count": 1
+    },
+    {
+      "actual": "sugar_beet",
+      "predicted": "leek",
+      "count": 1
+    },
+    {
+      "actual": "apple",
+      "predicted": "mustard",
+      "count": 1
+    },
+    {
+      "actual": "swede",
+      "predicted": "turnip",
+      "count": 1
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "spinach",
+      "count": 1
+    },
+    {
+      "actual": "leek",
+      "predicted": "cabbage",
+      "count": 1
+    },
+    {
+      "actual": "carrot",
+      "predicted": "horseradish",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "asparagus",
+      "count": 1
+    },
+    {
+      "actual": "cauliflower",
+      "predicted": "celery",
+      "count": 1
+    },
+    {
+      "actual": "plum",
+      "predicted": "asparagus",
+      "count": 1
+    },
+    {
+      "actual": "parsnip",
+      "predicted": "asparagus",
+      "count": 1
+    },
+    {
+      "actual": "wheat",
+      "predicted": "oats",
+      "count": 1
+    },
+    {
+      "actual": "broccoli",
+      "predicted": "celery",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "plum",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "cabbage",
+      "predicted": "artichoke",
+      "count": 1
+    },
+    {
+      "actual": "quinoa",
+      "predicted": "chickpea",
+      "count": 1
+    },
+    {
+      "actual": "turnip",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "pear",
+      "predicted": "swede",
+      "count": 1
+    },
+    {
+      "actual": "leek",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "spinach",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "leek",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "sugar_beet",
+      "count": 1
+    },
+    {
+      "actual": "plum",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "swede",
+      "count": 1
+    },
+    {
+      "actual": "mustard",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "beetroot",
+      "predicted": "parsnip",
+      "count": 1
+    },
+    {
+      "actual": "mustard",
+      "predicted": "oats",
+      "count": 1
+    },
+    {
+      "actual": "flax",
+      "predicted": "buckwheat",
+      "count": 1
+    },
+    {
+      "actual": "kale",
+      "predicted": "cauliflower",
+      "count": 1
+    },
+    {
+      "actual": "asparagus",
+      "predicted": "swede",
+      "count": 1
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "walnut",
+      "count": 1
+    },
+    {
+      "actual": "swede",
+      "predicted": "garlic",
+      "count": 1
+    },
+    {
+      "actual": "artichoke",
+      "predicted": "canola",
+      "count": 1
+    },
+    {
+      "actual": "cabbage",
+      "predicted": "celery",
+      "count": 1
+    },
+    {
+      "actual": "wheat",
+      "predicted": "mustard",
+      "count": 1
+    },
+    {
+      "actual": "lettuce",
+      "predicted": "canola",
+      "count": 1
+    },
+    {
+      "actual": "strawberry",
+      "predicted": "garlic",
+      "count": 1
+    },
+    {
+      "actual": "pear",
+      "predicted": "cherry",
+      "count": 1
+    },
+    {
+      "actual": "pear",
+      "predicted": "lettuce",
+      "count": 1
+    },
+    {
+      "actual": "walnut",
+      "predicted": "carrot",
+      "count": 1
+    },
+    {
+      "actual": "apple",
+      "predicted": "beetroot",
+      "count": 1
+    },
+    {
+      "actual": "carrot",
+      "predicted": "asparagus",
+      "count": 1
+    },
+    {
+      "actual": "canola",
+      "predicted": "strawberry",
+      "count": 1
+    },
+    {
+      "actual": "radish",
+      "predicted": "mustard",
+      "count": 1
+    },
+    {
+      "actual": "cabbage",
+      "predicted": "canola",
+      "count": 1
+    },
+    {
+      "actual": "horseradish",
+      "predicted": "onion",
+      "count": 1
+    }
+  ],
+  "soil_experiment": {
+    "rf_without_soil": 0.6415094339622641,
+    "rf_with_soil": 0.7710691823899372,
+    "crops_with_one_soil_type": 62
+  },
+  "group_accuracy": {
+    "original_crops": 0.9264150943396227,
+    "new_crops": 0.5179245283018868,
+    "n_original_crops": 22,
+    "n_new_crops": 42
+  },
+  "baseline_original": {
+    "n_rows": 2200,
+    "n_crops": 22,
+    "results": [
+      {
+        "model": "Random Forest",
+        "test_accuracy": 0.9954545454545455,
+        "test_top3": 1.0,
+        "test_top5": 1.0
+      },
+      {
+        "model": "Gaussian Naive Bayes",
+        "test_accuracy": 0.9954545454545455,
+        "test_top3": 1.0,
+        "test_top5": 1.0
+      }
+    ]
+  },
+  "per_class": {
+    "apple": {
+      "precision": 0.6976744186046512,
+      "recall": 0.6,
+      "f1-score": 0.6451612903225806,
+      "support": 50.0
+    },
+    "artichoke": {
+      "precision": 0.56,
+      "recall": 0.4666666666666667,
+      "f1-score": 0.509090909090909,
+      "support": 30.0
+    },
+    "asparagus": {
+      "precision": 0.29411764705882354,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.3125,
+      "support": 30.0
+    },
+    "banana": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "barley": {
+      "precision": 0.6956521739130435,
+      "recall": 0.8,
+      "f1-score": 0.7441860465116279,
+      "support": 20.0
+    },
+    "beetroot": {
+      "precision": 0.3333333333333333,
+      "recall": 0.4,
+      "f1-score": 0.36363636363636365,
+      "support": 20.0
+    },
+    "blackgram": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "blueberry": {
+      "precision": 0.8064516129032258,
+      "recall": 0.8333333333333334,
+      "f1-score": 0.819672131147541,
+      "support": 30.0
+    },
+    "broccoli": {
+      "precision": 0.3,
+      "recall": 0.3,
+      "f1-score": 0.3,
+      "support": 20.0
+    },
+    "brussels_sprouts": {
+      "precision": 0.5882352941176471,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.625,
+      "support": 30.0
+    },
+    "buckwheat": {
+      "precision": 0.7666666666666667,
+      "recall": 0.7666666666666667,
+      "f1-score": 0.7666666666666667,
+      "support": 30.0
+    },
+    "cabbage": {
+      "precision": 0.5882352941176471,
+      "recall": 0.5,
+      "f1-score": 0.5405405405405406,
+      "support": 20.0
+    },
+    "canola": {
+      "precision": 0.59375,
+      "recall": 0.6333333333333333,
+      "f1-score": 0.6129032258064516,
+      "support": 30.0
+    },
+    "carrot": {
+      "precision": 0.2692307692307692,
+      "recall": 0.35,
+      "f1-score": 0.30434782608695654,
+      "support": 20.0
+    },
+    "cauliflower": {
+      "precision": 0.375,
+      "recall": 0.45,
+      "f1-score": 0.4090909090909091,
+      "support": 20.0
+    },
+    "celery": {
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1-score": 0.8,
+      "support": 20.0
+    },
+    "cherry": {
+      "precision": 0.3448275862068966,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.3389830508474576,
+      "support": 30.0
+    },
+    "chickpea": {
+      "precision": 0.851063829787234,
+      "recall": 0.8,
+      "f1-score": 0.8247422680412371,
+      "support": 50.0
+    },
+    "coconut": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "coffee": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "cotton": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "cranberry": {
+      "precision": 0.8275862068965517,
+      "recall": 0.8,
+      "f1-score": 0.8135593220338984,
+      "support": 30.0
+    },
+    "faba_bean": {
+      "precision": 0.48484848484848486,
+      "recall": 0.5333333333333333,
+      "f1-score": 0.5079365079365079,
+      "support": 30.0
+    },
+    "flax": {
+      "precision": 0.5625,
+      "recall": 0.6,
+      "f1-score": 0.5806451612903226,
+      "support": 30.0
+    },
+    "garlic": {
+      "precision": 0.45,
+      "recall": 0.45,
+      "f1-score": 0.45,
+      "support": 20.0
+    },
+    "grapes": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "hazelnut": {
+      "precision": 0.5714285714285714,
+      "recall": 0.5333333333333333,
+      "f1-score": 0.5517241379310345,
+      "support": 30.0
+    },
+    "horseradish": {
+      "precision": 0.17391304347826086,
+      "recall": 0.13333333333333333,
+      "f1-score": 0.1509433962264151,
+      "support": 30.0
+    },
+    "jute": {
+      "precision": 0.9523809523809523,
+      "recall": 1.0,
+      "f1-score": 0.975609756097561,
+      "support": 20.0
+    },
+    "kale": {
+      "precision": 0.6153846153846154,
+      "recall": 0.4,
+      "f1-score": 0.48484848484848486,
+      "support": 20.0
+    },
+    "kidneybeans": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "leek": {
+      "precision": 0.42857142857142855,
+      "recall": 0.3,
+      "f1-score": 0.35294117647058826,
+      "support": 20.0
+    },
+    "lentil": {
+      "precision": 0.7368421052631579,
+      "recall": 0.84,
+      "f1-score": 0.7850467289719626,
+      "support": 50.0
+    },
+    "lettuce": {
+      "precision": 0.45454545454545453,
+      "recall": 0.75,
+      "f1-score": 0.5660377358490566,
+      "support": 20.0
+    },
+    "maize": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "mango": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "mothbeans": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "mungbean": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "muskmelon": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "mustard": {
+      "precision": 0.6071428571428571,
+      "recall": 0.5666666666666667,
+      "f1-score": 0.5862068965517241,
+      "support": 30.0
+    },
+    "oats": {
+      "precision": 0.5333333333333333,
+      "recall": 0.4,
+      "f1-score": 0.45714285714285713,
+      "support": 20.0
+    },
+    "onion": {
+      "precision": 0.45454545454545453,
+      "recall": 0.5,
+      "f1-score": 0.47619047619047616,
+      "support": 20.0
+    },
+    "orange": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "papaya": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "parsnip": {
+      "precision": 0.2857142857142857,
+      "recall": 0.2,
+      "f1-score": 0.23529411764705882,
+      "support": 30.0
+    },
+    "pear": {
+      "precision": 0.34615384615384615,
+      "recall": 0.3,
+      "f1-score": 0.32142857142857145,
+      "support": 30.0
+    },
+    "peas": {
+      "precision": 0.5384615384615384,
+      "recall": 0.7,
+      "f1-score": 0.6086956521739131,
+      "support": 20.0
+    },
+    "pigeonpeas": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "plum": {
+      "precision": 0.32432432432432434,
+      "recall": 0.4,
+      "f1-score": 0.3582089552238806,
+      "support": 30.0
+    },
+    "pomegranate": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "potato": {
+      "precision": 0.9523809523809523,
+      "recall": 1.0,
+      "f1-score": 0.975609756097561,
+      "support": 20.0
+    },
+    "quinoa": {
+      "precision": 0.6666666666666666,
+      "recall": 0.4666666666666667,
+      "f1-score": 0.5490196078431373,
+      "support": 30.0
+    },
+    "radish": {
+      "precision": 0.65625,
+      "recall": 0.7,
+      "f1-score": 0.6774193548387096,
+      "support": 30.0
+    },
+    "raspberry": {
+      "precision": 0.5714285714285714,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.6153846153846154,
+      "support": 30.0
+    },
+    "rice": {
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1-score": 0.9743589743589743,
+      "support": 20.0
+    },
+    "rye": {
+      "precision": 0.7222222222222222,
+      "recall": 0.65,
+      "f1-score": 0.6842105263157895,
+      "support": 20.0
+    },
+    "spinach": {
+      "precision": 0.4,
+      "recall": 0.3,
+      "f1-score": 0.34285714285714286,
+      "support": 20.0
+    },
+    "strawberry": {
+      "precision": 0.5,
+      "recall": 0.6,
+      "f1-score": 0.5454545454545454,
+      "support": 30.0
+    },
+    "sugar_beet": {
+      "precision": 0.47368421052631576,
+      "recall": 0.45,
+      "f1-score": 0.46153846153846156,
+      "support": 20.0
+    },
+    "swede": {
+      "precision": 0.32432432432432434,
+      "recall": 0.4,
+      "f1-score": 0.3582089552238806,
+      "support": 30.0
+    },
+    "turnip": {
+      "precision": 0.25,
+      "recall": 0.2,
+      "f1-score": 0.2222222222222222,
+      "support": 20.0
+    },
+    "walnut": {
+      "precision": 0.6153846153846154,
+      "recall": 0.5333333333333333,
+      "f1-score": 0.5714285714285714,
+      "support": 30.0
+    },
+    "watermelon": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 20.0
+    },
+    "wheat": {
+      "precision": 0.6111111111111112,
+      "recall": 0.55,
+      "f1-score": 0.5789473684210527,
+      "support": 20.0
+    }
+  }
+}
