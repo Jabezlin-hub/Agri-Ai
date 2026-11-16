@@ -1,5 +1,18 @@
 [theme]
+base = "light"
 primaryColor = "#2e7d32"
+backgroundColor = "#f6f9f1"
+secondaryBackgroundColor = "#e6f0dc"
+textColor = "#1f3a1f"
+borderColor = "#d3e2c4"
+linkColor = "#2e7d32"
+font = "Nunito:https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+headingFont = "Poppins:https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap"
+baseRadius = "0.75rem"
+buttonRadius = "full"
+dataframeHeaderBackgroundColor = "#e6f0dc"
+metricValueFontWeight = 700
+chartCategoricalColors = ["#2e7d32", "#f9a825", "#00897b", "#ef6c00", "#6a1b9a", "#c2185b", "#1565c0", "#8d6e63"]
 
 [browser]
 gatherUsageStats = false

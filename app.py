@@ -23,6 +23,7 @@ import joblib
 import pandas as pd
 import streamlit as st
 
+from src import ui
 from src.advisor import SOIL, fertiliser_advice, soil_fix, stress_test
 from src.data import FEATURE_INFO, FEATURES, TARGET, load_data
 from src.explain import shapley_values
@@ -46,9 +47,13 @@ CROP_EMOJI = {
     "cabbage": "🥬", "kale": "🥬", "lettuce": "🥬", "spinach": "🥬", "brussels_sprouts": "🥬",
     "strawberry": "🍓", "blueberry": "🫐", "cranberry": "🫐", "raspberry": "🍓",
     "cherry": "🍒", "pear": "🍐", "plum": "🍑", "hazelnut": "🌰", "walnut": "🌰",
+    "artichoke": "🌿", "asparagus": "🎋", "beetroot": "🫚", "canola": "🌼", "celery": "🥬",
+    "flax": "🌸", "horseradish": "🫚", "leek": "🧅", "mustard": "🌼", "parsnip": "🥕",
+    "radish": "🥕", "sugar_beet": "🫚", "swede": "🥔", "turnip": "🧅",
 }
 
 st.set_page_config(page_title="AgriAI - Crop Recommender", page_icon="🌱", layout="wide")
+st.html(ui.CSS)
 
 
 def crop_name(c: str) -> str:
@@ -135,11 +140,13 @@ families = get_families(version)
 best_res = metrics.get("final") or next(
     r for r in metrics["results"] if r["model"] == metrics["best_model"])
 
-st.title("🌱 AgriAI — Crop Recommender")
-st.caption("Recommends crops for your soil nutrients (N-P-K, pH) and local climate "
-           f"· Model: **{metrics['best_model']}** · Data: {metrics['n_rows']:,} records, "
-           f"{metrics['n_crops']} crops · Right crop in the top 5: "
-           f"**{best_res.get('test_top5', best_res['test_accuracy']):.0%}** of test cases")
+st.html(ui.hero(
+    "🌱 AgriAI — Crop Recommender",
+    "Machine learning that reads your soil test and local climate and tells you what to grow, "
+    "why, and how to make your field fit the crop you want.",
+    [f"🌾 {metrics['n_crops']} crops", f"📚 {metrics['n_rows']:,} records",
+     f"🎯 Top-5 hit rate {best_res.get('test_top5', best_res['test_accuracy']):.0%}",
+     f"🧠 {metrics['best_model']}"]))
 if "synthetic" in source:
     st.info("Running on the synthetic stand-in dataset. Put a real dataset CSV in `data/` "
             "and re-run `python train.py`.", icon="ℹ️")
@@ -162,6 +169,15 @@ def family_traits(crop: str) -> str:
 def family_members(crop: str) -> list[str]:
     f = families["family_of"][crop]
     return [c for c, g in families["family_of"].items() if g == f]
+
+
+def family_color(crop: str) -> str:
+    """The colour of the crop's family, used on cards, bars and the families map."""
+    if not families:
+        return "#2e7d32"
+    ids = sorted(families["names"])
+    return ui.FAMILY_COLORS[ids.index(families["family_of"][crop]) % len(ui.FAMILY_COLORS)]
+
 
 defaults = df[df[TARGET] == "rice"][FEATURES].median()
 limits = df[FEATURES].agg(["min", "max"])
@@ -208,7 +224,9 @@ MONTHS = ["January", "February", "March", "April", "May", "June", "July", "Augus
 
 # ---------------- Recommendation ----------------
 with tab_rec:
-    st.subheader("1. Enter your field conditions")
+    st.html(ui.section("🧪", "Step 1 · Enter your field conditions",
+                       "Soil-test values and climate, or fill the climate from your town",
+                       "#6d4c41"))
 
     with st.expander("📍 Fill the climate from your location (optional)"):
         st.caption("Looks up last season's real weather for your town from the free "
@@ -271,7 +289,8 @@ with tab_rec:
                 inputs[feat] = field_input(feat)
         st.form_submit_button("🌱 Recommend crop", type="primary", width="stretch")
 
-    st.subheader("2. Recommendation")
+    st.html(ui.section("🌾", "Step 2 · Your recommendation",
+                       "The model's best match and its 5-crop shortlist", "#2e7d32"))
     proba = predict(version, tuple(inputs[f] for f in FEATURES))
     ranking = (pd.DataFrame({"crop": model.classes_, "confidence": proba})
                .sort_values("confidence", ascending=False).reset_index(drop=True))
@@ -279,20 +298,18 @@ with tab_rec:
 
     c1, c2 = st.columns([1, 1.4])
     with c1:
-        st.markdown(f"<div style='font-size:64px;line-height:1'>{CROP_EMOJI.get(best.crop, '🌱')}</div>",
-                    unsafe_allow_html=True)
-        st.markdown(f"## {crop_name(best.crop)}")
-        st.metric("Model confidence", f"{best.confidence:.1%}")
+        st.html(ui.crop_card(CROP_EMOJI.get(best.crop, "🌱"), crop_name(best.crop),
+                             best.confidence, family_name(best.crop), family_color(best.crop)))
         if best.confidence < 0.4:
             st.warning("Several crops suit these conditions about equally well. Treat the top "
                        "few as a shortlist rather than one answer.")
     with c2:
-        st.subheader("Top 5 suitable crops")
-        top = ranking.head(5).copy()
-        top["crop"] = top.crop.map(crop_label)
-        st.dataframe(top, hide_index=True, width="stretch",
-                     column_config={"crop": "Crop", "confidence": st.column_config.ProgressColumn(
-                         "Confidence", format="percent", min_value=0, max_value=1)})
+        st.markdown("**Top 5 suitable crops**")
+        st.html(ui.rank_list([
+            {"emoji": CROP_EMOJI.get(r.crop, "🌱"), "name": crop_name(r.crop),
+             "family": family_name(r.crop), "confidence": r.confidence,
+             "color": family_color(r.crop)}
+            for r in ranking.head(5).itertuples()]))
 
     if families:
         fam_crops = family_members(best.crop)
@@ -303,7 +320,8 @@ with tab_rec:
                 f"{fam_share:.0%} in total, so even if the exact crop is uncertain, the family "
                 "is a stronger signal (see the 🧬 Crop families tab).", icon="🧬")
 
-    st.subheader("🧠 Why this crop? (explainable AI)")
+    st.html(ui.section("🧠", "Why this crop?",
+                       "Explainable AI: how each of your inputs moved the model", "#6a1b9a"))
     # Exact Shapley values need ~8,000 model predictions, so they run on request (then
     # stay cached for this field) instead of slowing every click.
     if st.toggle("Explain the recommendation", key="show_why",
@@ -347,7 +365,8 @@ with tab_rec:
     else:
         st.caption("Switch on to see which of your inputs pushed the model toward each crop.")
 
-    st.subheader(f"Your field vs. typical {crop_name(best.crop).lower()} conditions")
+    st.html(ui.section("📏", f"Your field vs. typical {crop_name(best.crop).lower()} conditions",
+                       "✅ inside the range seen in the data · ⚠️ outside it", "#00897b"))
     crop_rows = df[df[TARGET] == best.crop][FEATURES]
     compare = pd.DataFrame({
         # Fixed FEATURES order: the form collects inputs in a different (soil, climate) order
@@ -367,7 +386,8 @@ FIELD_LINE = ("Using your field from the Recommend tab: "
 
 # ---------------- Soil fix advisor ----------------
 with tab_fix:
-    st.subheader("Want to grow a specific crop? See what your soil needs")
+    st.html(ui.section("🛠️", "Want to grow a specific crop? See what your soil needs",
+                       "Counterfactual search over hundreds of soil adjustments", "#ef6c00"))
     st.caption("Pick the crop you'd like to grow. The app searches hundreds of possible soil "
                "adjustments, scores each with the model, and shows the smallest change to N, P, "
                "K and pH that makes your chosen crop the top recommendation. Your climate stays "
@@ -434,7 +454,8 @@ with tab_fix:
 
 # ---------------- Climate stress test ----------------
 with tab_climate:
-    st.subheader("Will your shortlist still work in a warmer, drier or wetter year?")
+    st.html(ui.section("🌡️", "Will your shortlist still work in a warmer, drier or wetter year?",
+                       "12 climate-change scenarios", "#c62828"))
     st.caption("Re-scores your top 5 crops in 12 scenarios: warming of +0 to +3 °C combined "
                "with 20% less, the same, or 20% more rainfall. Pick a crop that stays suitable "
                "across scenarios, not just the best one today.")
@@ -478,7 +499,8 @@ with tab_climate:
 
 # ---------------- Crop families (unsupervised learning) ----------------
 with tab_fam:
-    st.subheader("Which crops need similar conditions? (unsupervised learning)")
+    st.html(ui.section("🧬", "Which crops need similar conditions?",
+                       "Unsupervised learning: hierarchical clustering + PCA", "#1565c0"))
     if not families:
         st.info("Run `python train.py` to build the crop families.")
     else:
@@ -513,7 +535,10 @@ with tab_fam:
         base_chart = alt.Chart(cent).encode(
             x=alt.X("pc1:Q", title=f"PC1 ({ev[0]:.0%} of variation: {axis_words('pc1')})"),
             y=alt.Y("pc2:Q", title=f"PC2 ({ev[1]:.0%} of variation: {axis_words('pc2')})"))
-        fam_scale = alt.Scale(scheme="tableau10")
+        fam_ids = sorted(families["names"])
+        fam_scale = alt.Scale(domain=[families["names"][i] for i in fam_ids],
+                              range=[ui.FAMILY_COLORS[j % len(ui.FAMILY_COLORS)]
+                                     for j in range(len(fam_ids))])
         points = base_chart.mark_circle(size=110, opacity=0.85).encode(
             color=alt.Color("family:N", title="Family", scale=fam_scale,
                             legend=alt.Legend(orient="bottom", columns=2)),
@@ -532,15 +557,18 @@ with tab_fam:
         st.caption("Orange ◆ = your field from the Recommend tab. Crops close together need similar "
                    "conditions, which is why the model confuses them. Scroll to zoom, drag to pan.")
 
-        rows = []
-        for f_id, name in families["names"].items():
-            members = [c for c, g in families["family_of"].items() if g == f_id]
-            rows.append({"Family": name,
-                         "Stands out for": families.get("descriptions", {}).get(f_id, ""),
-                         "Crops": len(members),
-                         "Members": ", ".join(crop_name(c) for c in members)})
-        st.dataframe(pd.DataFrame(rows).sort_values("Crops", ascending=False),
-                     hide_index=True, width="stretch")
+        cards = []
+        for j, f_id in enumerate(fam_ids):
+            members = sorted((c for c, g in families["family_of"].items() if g == f_id),
+                             key=crop_name)
+            cards.append({"name": families["names"][f_id],
+                          "desc": families.get("descriptions", {}).get(f_id, ""),
+                          "color": ui.FAMILY_COLORS[j % len(ui.FAMILY_COLORS)],
+                          "emojis": "".join(list(dict.fromkeys(CROP_EMOJI.get(c, "🌱")
+                                                               for c in members))[:10]),
+                          "members": [crop_name(c) for c in members]})
+        cards.sort(key=lambda c: -len(c["members"]))
+        st.html(ui.family_cards(cards))
         st.caption("Each family is named after its most typical crop (the one closest to the "
                    "family's centre). 'Stands out for' lists the two inputs that most set the "
                    f"family apart from the average of all {metrics['n_crops']} crops.")
@@ -550,7 +578,8 @@ with tab_fam:
 
 # ---------------- Data explorer ----------------
 with tab_data:
-    st.subheader("Dataset overview")
+    st.html(ui.section("📊", "Dataset overview",
+                       f"Kaggle crop recommendation data · {metrics['n_crops']} crops", "#00897b"))
     m1, m2, m3 = st.columns(3)
     m1.metric("Records", f"{len(df):,}")
     m2.metric("Crops", df[TARGET].nunique())
@@ -580,7 +609,14 @@ with tab_data:
 
 # ---------------- Model performance ----------------
 with tab_model:
-    st.subheader("Algorithm comparison")
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Right crop is #1", f"{best_res['test_accuracy']:.1%}")
+    k2.metric("Right crop in top 5", f"{best_res.get('test_top5', 0):.1%}")
+    if metrics.get("family_accuracy") is not None:
+        k3.metric("Right crop family", f"{metrics['family_accuracy']:.1%}")
+    k4.metric("Algorithms compared", len(metrics["results"]))
+    st.html(ui.section("🧪", "Algorithm comparison",
+                       "7 classifiers, 5-fold cross-validation", "#1565c0"))
     order = ["model", "test_accuracy", "test_top3", "test_top5", "test_f1_macro",
              "cv_mean", "cv_std", "train_seconds"]
     res = pd.DataFrame(metrics["results"])
@@ -697,11 +733,23 @@ for a field from seven inputs. It covers {metrics['n_crops']} crops.
 | pH | Soil acidity / alkalinity |
 | Rainfall | Rainfall (mm) |
 
-**Pipeline:** data loading → statistical analysis (descriptive stats, correlation,
-ANOVA F-test) → standard scaling → training 7 classifiers → 5-fold cross-validation →
-selection of the best model on a held-out test set → deployment in this Streamlit app.
+**Machine-learning pipeline**
 
-**Tech stack:** Python · Pandas · NumPy · scikit-learn · Matplotlib / Seaborn · Streamlit
+1. **Statistical analysis:** descriptive statistics, correlations, ANOVA F-test.
+2. **Supervised learning:** 7 classifiers compared with 5-fold cross-validation, then
+   Random Forest, Extra Trees and Histogram Gradient Boosting tuned with
+   RandomizedSearchCV and combined into soft-voting and stacking ensembles.
+3. **Model selection:** best cross-validation accuracy among models that fit the cloud
+   server's memory, then a single score on the held-out 20% test set.
+4. **Unsupervised learning:** Ward hierarchical clustering groups crops into families;
+   PCA draws them on a 2-D map.
+5. **Explainable AI:** exact Shapley values show why each crop was recommended.
+6. **Decision support:** counterfactual soil fixes and a climate-change stress test.
+
+**Tech stack:** Python · Pandas · NumPy · SciPy · scikit-learn · Altair / Matplotlib /
+Seaborn · Streamlit · Open-Meteo weather API
 
 *This is an academic project. Recommendations are suggestions, not agronomic advice.*
 """)
+
+st.html(ui.FOOTER)
