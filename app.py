@@ -2,9 +2,21 @@
 
 Run:  streamlit run app.py
 """
+import os
+
+# One thread for every numeric library, set before numpy / scikit-learn load. On a cloud
+# container these libraries see the host's many cores while the app gets a fraction of
+# one, and dozens of competing threads made each run take minutes.
+for _var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
 import json
 import warnings
 from pathlib import Path
+
+from threadpoolctl import threadpool_limits
+
+threadpool_limits(limits=1)  # also caps pools that were started before the env vars
 
 import altair as alt
 import joblib
@@ -292,39 +304,48 @@ with tab_rec:
                 "is a stronger signal (see the 🧬 Crop families tab).", icon="🧬")
 
     st.subheader("🧠 Why this crop? (explainable AI)")
-    explain_crop = st.selectbox("Explain the model's score for", list(ranking.crop.head(5)),
-                                format_func=crop_label, key="explain_crop")
-    with st.spinner("Computing Shapley values…"):
-        contrib, base = explain(version, tuple(inputs[f] for f in FEATURES))
-    col = list(model.classes_).index(explain_crop)
-    phi = contrib[explain_crop]
-    pred_p = ranking.set_index("crop").confidence[explain_crop]
-    shap_df = pd.DataFrame({
-        "input": [f"{FEATURE_INFO[f][0]} = {inputs[f]:g} {FEATURE_INFO[f][1]}".strip()
-                  for f in FEATURES],
-        "contribution": phi.values * 100,
-    }).sort_values("contribution", key=abs, ascending=False)
-    shap_df["direction"] = shap_df.contribution.map(lambda v: "raises" if v >= 0 else "lowers")
-    chart = (alt.Chart(shap_df)
-             .mark_bar(cornerRadiusEnd=3)
-             .encode(x=alt.X("contribution:Q", title="Effect on this crop's score (percentage points)"),
-                     y=alt.Y("input:N", sort=None, title=None,
-                             axis=alt.Axis(labelLimit=260, labelFontSize=12)),
-                     color=alt.Color("direction:N", title=None,
-                                     scale=alt.Scale(domain=["raises", "lowers"],
-                                                     range=["#2e7d32", "#c62828"])),
-                     tooltip=["input", alt.Tooltip("contribution:Q", format="+.1f")])
-             .properties(height=260))
-    st.altair_chart(chart, width="stretch")
-    top_up = shap_df[shap_df.contribution > 0].head(2).input.tolist()
-    top_down = shap_df[shap_df.contribution < 0].head(1).input.tolist()
-    st.caption(
-        f"An average crop profile scores {crop_name(explain_crop)} at {base[col]:.1%}. Your "
-        f"field's values move it to {pred_p:.1%}"
-        + (f"; the biggest boosts come from {' and '.join(top_up)}" if top_up else "")
-        + (f", while {top_down[0]} holds it back" if top_down else "")
-        + ". These are exact Shapley values: each bar is the input's average effect across all "
-        "128 combinations of the 7 inputs, and the bars add up to the difference.")
+    # Exact Shapley values need ~8,000 model predictions, so they run on request (then
+    # stay cached for this field) instead of slowing every click.
+    if st.toggle("Explain the recommendation", key="show_why",
+                 help="Computes exact Shapley values: a few seconds on the free server."):
+        explain_crop = st.selectbox("Explain the model's score for",
+                                    list(ranking.crop.head(5)),
+                                    format_func=crop_label, key="explain_crop")
+        with st.spinner("Computing Shapley values…"):
+            contrib, base = explain(version, tuple(inputs[f] for f in FEATURES))
+        col = list(model.classes_).index(explain_crop)
+        phi = contrib[explain_crop]
+        pred_p = ranking.set_index("crop").confidence[explain_crop]
+        shap_df = pd.DataFrame({
+            "input": [f"{FEATURE_INFO[f][0]} = {inputs[f]:g} {FEATURE_INFO[f][1]}".strip()
+                      for f in FEATURES],
+            "contribution": phi.values * 100,
+        }).sort_values("contribution", key=abs, ascending=False)
+        shap_df["direction"] = shap_df.contribution.map(
+            lambda v: "raises" if v >= 0 else "lowers")
+        chart = (alt.Chart(shap_df)
+                 .mark_bar(cornerRadiusEnd=3)
+                 .encode(x=alt.X("contribution:Q",
+                                 title="Effect on this crop's score (percentage points)"),
+                         y=alt.Y("input:N", sort=None, title=None,
+                                 axis=alt.Axis(labelLimit=260, labelFontSize=12)),
+                         color=alt.Color("direction:N", title=None,
+                                         scale=alt.Scale(domain=["raises", "lowers"],
+                                                         range=["#2e7d32", "#c62828"])),
+                         tooltip=["input", alt.Tooltip("contribution:Q", format="+.1f")])
+                 .properties(height=260))
+        st.altair_chart(chart, width="stretch")
+        top_up = shap_df[shap_df.contribution > 0].head(2).input.tolist()
+        top_down = shap_df[shap_df.contribution < 0].head(1).input.tolist()
+        st.caption(
+            f"An average crop profile scores {crop_name(explain_crop)} at {base[col]:.1%}. Your "
+            f"field's values move it to {pred_p:.1%}"
+            + (f"; the biggest boosts come from {' and '.join(top_up)}" if top_up else "")
+            + (f", while {top_down[0]} holds it back" if top_down else "")
+            + ". These are exact Shapley values: each bar is the input's average effect across "
+            "all 128 combinations of the 7 inputs, and the bars add up to the difference.")
+    else:
+        st.caption("Switch on to see which of your inputs pushed the model toward each crop.")
 
     st.subheader(f"Your field vs. typical {crop_name(best.crop).lower()} conditions")
     crop_rows = df[df[TARGET] == best.crop][FEATURES]
@@ -352,15 +373,9 @@ with tab_fix:
                "the same, since fertiliser and lime can change soil but not weather.")
     st.caption(FIELD_LINE)
     all_crops = sorted(model.classes_, key=crop_name)
-    # Default: among the next 9 crops, the one soil changes can lift to #1 with the fewest
-    # climate mismatches (ties go to the higher-ranked crop).
+    # Default to the field's #2 crop (one search instead of trying many to pick a demo).
     field_key = tuple(inputs[f] for f in FEATURES)
-
-    def _demo_score(c):
-        r = cached_soil_fix(version, field_key, c)
-        return (r["status"] != "top", len(r.get("climate_issues", [])))
-    alternatives = list(ranking.crop.iloc[1:10])
-    suggested = min(alternatives, key=lambda c: (_demo_score(c), alternatives.index(c)))
+    suggested = ranking.crop.iloc[1]
     target = st.selectbox("Crop you want to grow", all_crops, index=all_crops.index(suggested),
                           format_func=crop_label)
     fix = cached_soil_fix(version, field_key, target)
